@@ -4,10 +4,15 @@ import java.util.*;
 public class LinkedListMultiset<T> extends Multiset<T>
 {
 
+	//eg, a multiset of mammals.
+	//there could be 2 cats and 3 humans, you still need a list and you still
+	//need to store the individual instances, but then how do you compare them?
+	//this is meant to be sorted!
 	public class Node<T> {
-		public T item;
+		public ArrayList<T> items;
 		public Node<T> next;
 		public Node<T> prev;
+		private int instances;
 
 		public Node(T item) {
 			this.item = item;
@@ -15,11 +20,8 @@ public class LinkedListMultiset<T> extends Multiset<T>
 			this.prev = null;
 		}
 
-		public Node(T item, Node<T> next, Node<T> prev) {
-			this(item);
-			this.next = next;
-			this.prev = prev;
-		}
+		public int getInstances;
+		public 
 
 	}
 
@@ -32,12 +34,10 @@ public class LinkedListMultiset<T> extends Multiset<T>
 	}
 
 	public LinkedListMultiset() {
-		// Implement me!
 		instances = 0;
 	} // end of LinkedListMultiset()
 
 
-	// Implement me!
 	public void add(T item) {
 		if(instances < 1) {
 			//empty
@@ -46,7 +46,7 @@ public class LinkedListMultiset<T> extends Multiset<T>
 		} else {
 			//not empty
 			Node<T> current = head;
-			while(current != tail && current.item < item) {
+			while(current != tail && current.item.compareTo(item) < 0) {
 				current = current.next;
 			}
 			insertBefore(current, item);
@@ -72,28 +72,26 @@ public class LinkedListMultiset<T> extends Multiset<T>
 
 	private Node<T> find(T item) {
 		Node<T> current = head;
-		while(current.item != item && current != tail) {
+		while(current.item.compareTo(item) != 0 && current != tail) {
 			current = current.next;
 		}
-		if(current.item == item) {
+		if(current.item.compareTo(item) == 0) {
 			return current;
 		}
 		return null;
 	}
 
 	public int search(T item) {
-		// Implement me!
+		int instances = 0;
 		Node<T> current = head;
-		while(current.item != item && current != tail) {
+		while(current != tail) {
+			if(current.item.compareTo(item) == 0) {
+				instances++;
+			}
 			current = current.next;
 		}
-		if(current.item == item) {
-			return current;
-		}
-		return null;
 
-		// default return, please override when you implement this method
-		return 0;
+		return instances;
 	} // end of add()
 
 
