@@ -1,54 +1,57 @@
 import java.io.PrintStream;
 import java.util.*;
 
-public class LinkedListMultiset<T> extends Multiset<T>
-{
+//we need comparable for sorting
+import java.lang.Comparable;
+
+public class LinkedListMultiset<T extends Comparable<T>> extends Multiset<T> {
 
 	public class Node<T> {
 		public T item;
 		public Node<T> next;
 		public Node<T> prev;
-		
+		public int instances;
+
 		public Node(T item) {
+			instances = 1;
 			this.item = item;
 			this.next = null;
 			this.prev = null;
-		}
-
-		public Node(T item, Node<T> next, Node<T> prev) {
-			this(item);
-			this.next = next;
-			this.prev = prev;
 		}
 
 	}
 
 	public Node<T> head;
 	public Node<T> tail;
-	private int instances;
-
+	private int count;
 
 	public LinkedListMultiset() {
-		// Implement me!
-		instances = 0;
+		count = 0;
+		head = null;
+		tail = null;
 	} // end of LinkedListMultiset()
-	
-	
-	// Implement me!
+
+
 	public void add(T item) {
-		if(instances < 1) {
+		if(count < 1) {
 			//empty
 			head = new Node<T>(item);
-			tail = item;
+			tail = head;
 		} else {
 			//not empty
 			Node<T> current = head;
-			while(current != tail && current.item < item) {
+			while(current != null && current.item.compareTo(item) != 0) {
 				current = current.next;
 			}
-			insertBefore(current, item);
+
+			if(current == null) {
+				//insert after tail
+				insertBefore(current, item);
+			} else {
+				//current.item is equal, add to current
+				current.instances++;
+			}
 		}
-		instances++;
 	} // end of add()
 
 	private void insertBefore(Node<T> after, T to_insert) {
@@ -65,67 +68,78 @@ public class LinkedListMultiset<T> extends Multiset<T>
 			after.prev = item;
 			head = item;
 		}
+		count++;
 	}
-	
-	
-	public int search(T item) {
-		// Implement me!		
-		
-		// default return, please override when you implement this method
-		return 0;
-	} // end of add()
-	
-	
-	public void removeOne(T item) {
-		// Implement me!
+
+	private Node<T> find(T item) {
 		Node<T> current = head;
-		while(current.item != item && current != tail) {
+		while(current != null && current.item.compareTo(item) != 0) {
 			current = current.next;
 		}
-		
-		if(instances == 1) {
-			if(current.item == item) {
-				//only 1
-				head = null;
-				tail = null;
-			} else {
-				//item not in list
-				return;
-			}
+		return current;
+	}
+
+	public int search(T item) {
+		Node<T> current = head;
+		while(current != null && current.item.compareTo(item) != 0) {
+			current = current.next;
+		}
+
+		return current.instances;
+	} // end of add()
+
+
+	public void removeOne(T item) {
+		Node<T> current = find(item);
+		if(current == null) {
+			return;
+		}
+		if(--current.instances <= 0) {
+			remove(current);
+		}
+	} // end of removeOne()
+
+	private void remove(Node<T> current) {
+		if(count == 1) {
+			//only 1
+			head = null;
+			tail = null;
 		} else {
 			if(current == tail) {
-				if(current.item == item) {
-					current.prev.next = null;
-					tail = current.prev;
-					current.prev = null;
-				} else {
-					//item not in list
-					return;
-				}
+				//tail
+				current.prev.next = null;
+				tail = current.prev;
+				current.prev = null;
 			} else if(current == head) {
 				//head
 				head = current.next;
 				current.next.prev = null;
 				current.next = null;
 			} else {
-				//not head or tail
+				//neither head nor tail
 				current.prev.next = current.next;
 				current.next.prev = current.prev;
 				current.next = null;
 				current.prev = null;
 			}
 		}
-		instances--;
-	} // end of removeOne()
-	
-	
+		count--;
+	}
+
 	public void removeAll(T item) {
-		// Implement me!
+		Node<T> current = find(item);
+		if(current == null) {
+			return;
+		}
+		remove(current);
 	} // end of removeAll()
-	
-	
+
 	public void print(PrintStream out) {
-		// Implement me!
+		//TODO Implement me!
+		Node<T> current = head;
+		while(current != null) {
+			out.printf(Locale.CANADA, "%s%s%d\n", current.item, printDelim, current.instances);
+		}
 	} // end of print()
-	
+
 } // end of class LinkedListMultiset

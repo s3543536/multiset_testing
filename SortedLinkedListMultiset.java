@@ -23,17 +23,17 @@ public class SortedLinkedListMultiset<T extends Comparable<T>> extends Multiset<
 
 	public Node<T> head;
 	public Node<T> tail;
-	private int instances;
+	private int count;
 
 	public SortedLinkedListMultiset() {
-		instances = 0;
+		count = 0;
 		head = null;
 		tail = null;
 	} // end of LinkedListMultiset()
 
 
 	public void add(T item) {
-		if(instances < 1) {
+		if(count < 1) {
 			//empty
 			head = new Node<T>(item);
 			tail = head;
@@ -75,7 +75,7 @@ public class SortedLinkedListMultiset<T extends Comparable<T>> extends Multiset<
 			after.prev = item;
 			head = item;
 		}
-		instances++;
+		count++;
 	}
 
 	private Node<T> find(T item) {
@@ -87,16 +87,12 @@ public class SortedLinkedListMultiset<T extends Comparable<T>> extends Multiset<
 	}
 
 	public int search(T item) {
-		int instances = 0;
 		Node<T> current = head;
-		while(current != null) {
-			if(current.item.compareTo(item) == 0) {
-				instances++;
-			}
+		while(current != null && current.item.compareTo(item) != 0) {
 			current = current.next;
 		}
 
-		return instances;
+		return current.instances;
 	} // end of add()
 
 
@@ -111,7 +107,7 @@ public class SortedLinkedListMultiset<T extends Comparable<T>> extends Multiset<
 	} // end of removeOne()
 
 	private void remove(Node<T> current) {
-		if(instances == 1) {
+		if(count == 1) {
 			//only 1
 			head = null;
 			tail = null;
@@ -134,7 +130,7 @@ public class SortedLinkedListMultiset<T extends Comparable<T>> extends Multiset<
 				current.prev = null;
 			}
 		}
-		instances--;
+		count--;
 	}
 
 	public void removeAll(T item) {
