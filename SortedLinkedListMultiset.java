@@ -1,27 +1,23 @@
 import java.io.PrintStream;
 import java.util.*;
 
-public class LinkedListMultiset<T> extends Multiset<T>
-{
+//we need comparable for sorting
+import java.lang.Comparable;
 
-	//eg, a multiset of mammals.
-	//there could be 2 cats and 3 humans, you still need a list and you still
-	//need to store the individual instances, but then how do you compare them?
-	//this is meant to be sorted!
+public class SortedLinkedListMultiset<T extends Comparable<T>> extends Multiset<T> {
+
 	public class Node<T> {
-		public ArrayList<T> items;
+		public T item;
 		public Node<T> next;
 		public Node<T> prev;
-		private int instances;
+		public int instances;
 
 		public Node(T item) {
+			instances = 1;
 			this.item = item;
 			this.next = null;
 			this.prev = null;
 		}
-
-		public int getInstances;
-		public 
 
 	}
 
@@ -29,12 +25,10 @@ public class LinkedListMultiset<T> extends Multiset<T>
 	public Node<T> tail;
 	private int instances;
 
-	public int getInstances() {
-		return instances;
-	}
-
-	public LinkedListMultiset() {
+	public SortedLinkedListMultiset() {
 		instances = 0;
+		head = null;
+		tail = null;
 	} // end of LinkedListMultiset()
 
 
@@ -42,14 +36,28 @@ public class LinkedListMultiset<T> extends Multiset<T>
 		if(instances < 1) {
 			//empty
 			head = new Node<T>(item);
-			tail = item;
+			tail = head;
 		} else {
 			//not empty
 			Node<T> current = head;
-			while(current != tail && current.item.compareTo(item) < 0) {
+			while(current != null && current.item.compareTo(item) >= 0) {
 				current = current.next;
 			}
-			insertBefore(current, item);
+
+			if(current == null) {
+				//insert after tail
+				Node<T> newNode = new Node<T>(item);
+				tail.next = newNode;
+				newNode.prev = tail;
+				tail = newNode;
+				return;
+			} else if(current.item.compareTo(item) > 0) {
+				//current.item is greater, insert before
+				insertBefore(current, item);
+			} else if(current.item.compareTo(item) == 0) {
+				//current.item is equal, add to current
+				current.instances++;
+			}
 		}
 	} // end of add()
 
@@ -72,19 +80,16 @@ public class LinkedListMultiset<T> extends Multiset<T>
 
 	private Node<T> find(T item) {
 		Node<T> current = head;
-		while(current.item.compareTo(item) != 0 && current != tail) {
+		while(current != null && current.item.compareTo(item) != 0) {
 			current = current.next;
 		}
-		if(current.item.compareTo(item) == 0) {
-			return current;
-		}
-		return null;
+		return current;
 	}
 
 	public int search(T item) {
 		int instances = 0;
 		Node<T> current = head;
-		while(current != tail) {
+		while(current != null) {
 			if(current.item.compareTo(item) == 0) {
 				instances++;
 			}
@@ -100,8 +105,9 @@ public class LinkedListMultiset<T> extends Multiset<T>
 		if(current == null) {
 			return;
 		}
-
-		remove(current);
+		if(--current.instances <= 0) {
+			remove(current);
+		}
 	} // end of removeOne()
 
 	private void remove(Node<T> current) {
@@ -131,19 +137,20 @@ public class LinkedListMultiset<T> extends Multiset<T>
 		instances--;
 	}
 
-
 	public void removeAll(T item) {
-		Node<T> current = null;
-		current = find(item);
-		while(current != null) {
-			remove(current);
-			current = find(item);
+		Node<T> current = find(item);
+		if(current == null) {
+			return;
 		}
+		remove(current);
 	} // end of removeAll()
 
-
 	public void print(PrintStream out) {
-		// Implement me!
+		//TODO Implement me!
+		Node<T> current = head;
+		while(current != null) {
+			out.printf(Locale.CANADA, "%s%s%d\n", current.item, printDelim, current.instances);
+		}
 	} // end of print()
 
 } // end of class LinkedListMultiset
