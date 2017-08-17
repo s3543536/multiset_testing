@@ -8,7 +8,7 @@ public class LinkedListMultiset<T> extends Multiset<T>
 		public T item;
 		public Node<T> next;
 		public Node<T> prev;
-		
+
 		public Node(T item) {
 			this.item = item;
 			this.next = null;
@@ -35,8 +35,8 @@ public class LinkedListMultiset<T> extends Multiset<T>
 		// Implement me!
 		instances = 0;
 	} // end of LinkedListMultiset()
-	
-	
+
+
 	// Implement me!
 	public void add(T item) {
 		if(instances < 1) {
@@ -69,7 +69,7 @@ public class LinkedListMultiset<T> extends Multiset<T>
 		}
 		instances++;
 	}
-	
+
 	private Node<T> find(T item) {
 		Node<T> current = head;
 		while(current.item != item && current != tail) {
@@ -80,15 +80,23 @@ public class LinkedListMultiset<T> extends Multiset<T>
 		}
 		return null;
 	}
-	
+
 	public int search(T item) {
-		// Implement me!		
-		
+		// Implement me!
+		Node<T> current = head;
+		while(current.item != item && current != tail) {
+			current = current.next;
+		}
+		if(current.item == item) {
+			return current;
+		}
+		return null;
+
 		// default return, please override when you implement this method
 		return 0;
 	} // end of add()
-	
-	
+
+
 	public void removeOne(T item) {
 		Node<T> current = find(item);
 		if(current == null) {
@@ -124,8 +132,8 @@ public class LinkedListMultiset<T> extends Multiset<T>
 		}
 		instances--;
 	}
-	
-	
+
+
 	public void removeAll(T item) {
 		Node<T> current = null;
 		current = find(item);
@@ -134,10 +142,10 @@ public class LinkedListMultiset<T> extends Multiset<T>
 			current = find(item);
 		}
 	} // end of removeAll()
-	
-	
+
+
 	public void print(PrintStream out) {
 		// Implement me!
 	} // end of print()
-	
+
 } // end of class LinkedListMultiset
