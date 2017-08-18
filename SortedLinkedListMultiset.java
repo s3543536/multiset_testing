@@ -23,25 +23,22 @@ public class SortedLinkedListMultiset<T extends Comparable<T>> extends Multiset<
 
 	public Node<T> head;
 	public Node<T> tail;
-	private int count;
 
 	public SortedLinkedListMultiset() {
-		count = 0;
 		head = null;
 		tail = null;
-	} // end of LinkedListMultiset()
+	} // end of SortedLinkedListMultiset()
 
 
 	public void add(T item) {
-		if(count < 1) {
+		if(head == null) {
 			//empty
 			head = new Node<T>(item);
 			tail = head;
-			count++;
 		} else {
 			//not empty
 			Node<T> current = head;
-			while(current != null && current.item.compareTo(item) >= 0) {
+			while(current != null && current.item.compareTo(item) < 0) {
 				current = current.next;
 			}
 
@@ -76,7 +73,6 @@ public class SortedLinkedListMultiset<T extends Comparable<T>> extends Multiset<
 			after.prev = item;
 			head = item;
 		}
-		count++;
 	}
 
 	private Node<T> find(T item) {
@@ -94,10 +90,10 @@ public class SortedLinkedListMultiset<T extends Comparable<T>> extends Multiset<
 		}
 
 		if(current == null) {
-			System.out.printf("%s %d\n", item, 0);
+			//System.out.printf("%s %d\n", item, 0);
 			return 0;
 		}
-		System.out.printf("%s %d\n", current.item, current.instances);
+		//System.out.printf("%s %d\n", current.item, current.instances);
 
 		return current.instances;
 	} // end of add()
@@ -114,7 +110,7 @@ public class SortedLinkedListMultiset<T extends Comparable<T>> extends Multiset<
 	} // end of removeOne()
 
 	private void remove(Node<T> current) {
-		if(count == 1) {
+		if(head == tail) {
 			//only 1
 			head = null;
 			tail = null;
@@ -137,7 +133,6 @@ public class SortedLinkedListMultiset<T extends Comparable<T>> extends Multiset<
 				current.prev = null;
 			}
 		}
-		count--;
 	}
 
 	public void removeAll(T item) {
