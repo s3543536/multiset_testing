@@ -5,6 +5,20 @@ import java.util.*;
 import java.lang.Comparable;
 public class BstMultiset<T extends Comparable<T>> extends Multiset<T> {
 
+	public class Node<T> {
+		T item;
+		Node<T> parent;
+		Node<T> leftBranch;
+		Node<T> rightBranch;
+
+		public Node<T>(Node<T> parent, T item) {
+			this.item = item;
+			this.parent = parent;
+			this.leftBranch = null;
+			this.rightBranch = null;
+		}
+	}
+
 	public BstMultiset() {
 		// Implement me!
 	} // end of BstMultiset()
