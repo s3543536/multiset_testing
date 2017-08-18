@@ -92,7 +92,7 @@ public class LinkedListMultiset<T extends Comparable<T>> extends Multiset<T> {
 		}
 
 		if(current == null) {
-			System.out.printf("%s %d\n", item, 0);
+			//System.out.printf("%s %d\n", item, 0);
 			return 0;
 		}
 		System.out.printf("%s %d\n", current.item, current.instances);
