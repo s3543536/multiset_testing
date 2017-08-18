@@ -37,6 +37,7 @@ public class SortedLinkedListMultiset<T extends Comparable<T>> extends Multiset<
 			//empty
 			head = new Node<T>(item);
 			tail = head;
+			count++;
 		} else {
 			//not empty
 			Node<T> current = head;
@@ -63,7 +64,7 @@ public class SortedLinkedListMultiset<T extends Comparable<T>> extends Multiset<
 
 	private void insertBefore(Node<T> after, T to_insert) {
 		Node<T> item = new Node<T>(to_insert);
-		if(after.prev != null) {
+		if(after != head) {
 			//not at head
 			item.prev = after.prev;
 			item.next = after;
@@ -91,6 +92,12 @@ public class SortedLinkedListMultiset<T extends Comparable<T>> extends Multiset<
 		while(current != null && current.item.compareTo(item) != 0) {
 			current = current.next;
 		}
+
+		if(current == null) {
+			System.out.printf("%s %d\n", item, 0);
+			return 0;
+		}
+		System.out.printf("%s %d\n", current.item, current.instances);
 
 		return current.instances;
 	} // end of add()
@@ -142,11 +149,13 @@ public class SortedLinkedListMultiset<T extends Comparable<T>> extends Multiset<
 	} // end of removeAll()
 
 	public void print(PrintStream out) {
-		//TODO Implement me!
 		Node<T> current = head;
 		while(current != null) {
-			out.printf(Locale.CANADA, "%s%s%d\n", current.item, printDelim, current.instances);
+			//out.printf("%s%s%d\n", current.item, printDelim, current.instances);
+			out.println(""+current.item + printDelim + current.instances);
+			current = current.next;
 		}
+		out.flush();
 	} // end of print()
 
 } // end of class LinkedListMultiset

@@ -37,6 +37,7 @@ public class LinkedListMultiset<T extends Comparable<T>> extends Multiset<T> {
 			//empty
 			head = new Node<T>(item);
 			tail = head;
+			count++;
 		} else {
 			//not empty
 			Node<T> current = head;
@@ -45,8 +46,13 @@ public class LinkedListMultiset<T extends Comparable<T>> extends Multiset<T> {
 			}
 
 			if(current == null) {
-				//insert after tail
-				insertBefore(current, item);
+				//insert at head
+				//insertBefore(head, item);
+				Node<T> newnode = new Node<T>(item);
+				tail.next = newnode;
+				newnode.prev = tail;
+				tail = newnode;
+				count++;
 			} else {
 				//current.item is equal, add to current
 				current.instances++;
@@ -56,7 +62,7 @@ public class LinkedListMultiset<T extends Comparable<T>> extends Multiset<T> {
 
 	private void insertBefore(Node<T> after, T to_insert) {
 		Node<T> item = new Node<T>(to_insert);
-		if(after.prev != null) {
+		if(after != head) {
 			//not at head
 			item.prev = after.prev;
 			item.next = after;
@@ -84,6 +90,12 @@ public class LinkedListMultiset<T extends Comparable<T>> extends Multiset<T> {
 		while(current != null && current.item.compareTo(item) != 0) {
 			current = current.next;
 		}
+
+		if(current == null) {
+			System.out.printf("%s %d\n", item, 0);
+			return 0;
+		}
+		System.out.printf("%s %d\n", current.item, current.instances);
 
 		return current.instances;
 	} // end of add()
@@ -135,10 +147,11 @@ public class LinkedListMultiset<T extends Comparable<T>> extends Multiset<T> {
 	} // end of removeAll()
 
 	public void print(PrintStream out) {
-		//TODO Implement me!
 		Node<T> current = head;
 		while(current != null) {
-			out.printf(Locale.CANADA, "%s%s%d\n", current.item, printDelim, current.instances);
+			//out.printf("%s%s%d\n", current.item, printDelim, current.instances);
+			out.println(""+current.item + printDelim + current.instances);
+			current = current.next;
 		}
 	} // end of print()
 

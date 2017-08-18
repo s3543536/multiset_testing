@@ -1,8 +1,10 @@
 import java.io.PrintStream;
 import java.util.*;
 
-public class BstMultiset<T> extends Multiset<T>
-{
+//we need comparable for sorting
+import java.lang.Comparable;
+public class BstMultiset<T extends Comparable<T>> extends Multiset<T> {
+
 	public BstMultiset() {
 		// Implement me!
 	} // end of BstMultiset()
