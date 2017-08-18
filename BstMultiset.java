@@ -5,15 +5,41 @@ import java.util.*;
 import java.lang.Comparable;
 public class BstMultiset<T extends Comparable<T>> extends Multiset<T> {
 
-	public class Node<T> {
+	public class Node<T extends Comparable<T>> implements Comparable<Node<T>> {
 		public T item;
 		public Node<T> parent;
-		public Node<T> left == null;
-		public Node<T> right == null;
+		public Node<T> left = null;
+		public Node<T> right = null;
+		public int count = 0;
 
-		public Node<T>(Node<T> parent, T item) {
+		public Node(Node<T> parent, T item) {
 			this.item = item;
 			this.parent = parent;
+			count++;
+		}
+
+		public void add(T item) {
+			add(new Node<T>(this, item));
+		}
+
+		public void add(Node<T> item) {
+			switch(compareTo(item)) {
+				case -1:
+					//add right
+					right = item;
+					break;
+				case 0:
+					//add to current
+					count++;
+					break;
+				case 1:
+					//add left
+					left = item;
+					break;
+				default:
+					System.err.println("error, node.add is broken");
+					break;
+			}
 		}
 
 		public boolean isLeaf() {
@@ -21,7 +47,15 @@ public class BstMultiset<T extends Comparable<T>> extends Multiset<T> {
 		}
 
 		public Node<T> leftMost() {
-			return (left == null ? right : left)
+			return (left == null ? right : left);
+		}
+
+		public int compareTo(T item) {
+			return this.item.compareTo(item);
+		}
+
+		public int compareTo(Node<T> item) {
+			return this.item.compareTo(item.item);
 		}
 	}
 
@@ -41,16 +75,47 @@ public class BstMultiset<T extends Comparable<T>> extends Multiset<T> {
 			branch = to_check;
 			to_check = branch.leftMost();
 		} while(to_check != null);
+
 		return branch;
 	}
 
 	public void add(T item) {
-		//TODO Implement me!
 		if(trunk == null) {
 			//empty
 			trunk = new Node<T>(null, item);
 		} else {
+			int comp = trunk.compareTo(item);
+			Node<T> current = trunk;
 
+			while(true) {
+				switch(current.compareTo(item)) {
+					case -1:
+						//current is smaller, add right
+						if(current.right == null) {
+							current.add(item);
+							return;
+						} else {
+							current = current.right;
+						}
+						break;
+					case 0:
+						//equal, add here
+						current.add(item);
+						return;
+					case 1:
+						//current is greater, add left
+						if(current.left == null) {
+							current.add(item);
+							return;
+						} else {
+							current = current.left;
+						}
+						break;
+					default:
+						System.err.println("ERROR: add failed");
+						break;
+				}
+			}
 		}
 	} // end of add()
 
