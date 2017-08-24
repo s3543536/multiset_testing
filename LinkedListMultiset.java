@@ -33,6 +33,7 @@ public class LinkedListMultiset<T extends Comparable<T>> extends Multiset<T> {
 
 
 	public void add(T item) {
+		//System.out.println("asdf");
 		if(count < 1) {
 			//empty
 			head = new Node<T>(item);
@@ -95,7 +96,7 @@ public class LinkedListMultiset<T extends Comparable<T>> extends Multiset<T> {
 			//System.out.printf("%s %d\n", item, 0);
 			return 0;
 		}
-		System.out.printf("%s %d\n", current.item, current.instances);
+		//System.out.printf("%s %d\n", current.item, current.instances);
 
 		return current.instances;
 	} // end of add()
