@@ -9,10 +9,10 @@ import java.util.*;
  * Modified by:
  * @author Angel English s3543536
  */
-public class RevSequentialGen
+public class RandomGen
 {
 	/** Name of class, used in error messages. */
-	protected static final String progName = "RevSequentialGen";
+	protected static final String progName = "RandomGen";
 	
 	/** Standard outstream. */
 	protected static final PrintStream outStream = System.out;
@@ -26,12 +26,14 @@ public class RevSequentialGen
 		System.exit(1);
 	} // end of usage
 
+	public static int index = -1;
 	public static final String abc = "abcdefghijklmnopqrstuvwxyz";
 	public static final int max = abc.length() * abc.length() * abc.length();
-	public static int index = max;
 
-	public static String getNext() {
+	public static String getPrev() {
+		if(index == -1) { index = max; }
 		if(!(index >= 0)) {
+			index = -1;
 			return "";
 		}
 		char fst = abc.charAt((index / (abc.length() * abc.length())) % abc.length());
@@ -39,6 +41,85 @@ public class RevSequentialGen
 		char trd = abc.charAt(index % abc.length());
 		--index;
 		return "" + fst + snd + trd;
+	}
+
+
+	public static String getNext() {
+		if(index == -1) { index = 0; }
+		if(index >= max) {
+			index = -1;
+			return "";
+		}
+		char fst = abc.charAt((index / (abc.length() * abc.length())) % abc.length());
+		char snd = abc.charAt((index / abc.length()) % abc.length());
+		char trd = abc.charAt(index % abc.length());
+		index++;
+		return "" + fst + snd + trd;
+	}
+
+	public static final int ForSEQA = 0;//forward sequential add
+	public static final int RevSEQA = 1;//reverse sequential add
+	public static final int ForSEQR = 2;//forward sequential remove
+	public static final int RevSEQR = 3;//reverse sequential remove
+	public static final int RanARS = 4;//random add, remove, search
+	public static int mode = RanARS;
+
+	public static int count = 0;
+
+	//random distribution for add, search, and remove... 50 50 50 means each one
+	//will have a 1/3 chance, 50 50 0 means the first two will have a 1/2 chance
+	//and the third will have 0 chance
+	public static final int addPercent = 50;
+	public static final int srcPercent = 50;
+	public static final int remPercent = 50;
+
+	public static String getCommand() {
+		if(count > max) {
+			return "q";
+		}
+
+		String returnval;
+		switch(mode) {
+			case ForSEQA:
+				returnval = getNext();
+				if(returnval.equals("")) { return "q"; }
+				return "a " + returnval;
+			case ForSEQR:
+				returnval = getNext();
+				if(returnval.equals("")) { return "q"; }
+				return "ro " + returnval;
+			case RevSEQA:
+				returnval = getPrev();
+				if(returnval.equals("")) { return "q"; }
+				return "a " + returnval;
+			case RevSEQR:
+				returnval = getPrev();
+				if(returnval.equals("")) { return "q"; }
+				return "ro " + returnval;
+			default:
+			case RanARS:
+				if(count > max) { return "q"; }
+				Random rand = new Random();
+				int fst = (int)(rand.nextDouble() * 26);
+				int snd = (int)(rand.nextDouble() * 26);
+				int trd = (int)(rand.nextDouble() * 26);
+				returnval = " " + abc.charAt(fst) + abc.charAt(snd) + abc.charAt(trd);
+
+				int total = addPercent + remPercent + srcPercent;
+				int opt = (int)(rand.nextDouble() * total);
+				if(opt < addPercent) {
+					//add
+					returnval = "a" + returnval;
+				} else if(opt < addPercent + remPercent) {
+					//remove
+					returnval = "ro" + returnval;
+				} else {
+					//search
+					returnval = "s" + returnval;
+				}
+				count++;
+				return returnval;
+		}
 	}
 
 	/**
@@ -59,13 +140,12 @@ public class RevSequentialGen
 		
 		// continue reading in commands until we either receive the quit signal or there are no more input commands
 		while (!bQuit) {
-			line = getNext();
-			if(line.equals("")) {
+			line = getCommand();
+			if(line.equals("q")) {
 				//no more things
-				line = "P";
+				//line = "P";
 				bQuit = true;
-			} else {
-				line = "A " + line;
+				continue;
 			}
 			String[] tokens = line.split(" ");
 
@@ -127,7 +207,7 @@ public class RevSequentialGen
 					bQuit = true;
 					break;
 				default:
-					System.err.println(lineNum + ": Unknown command.");
+					System.err.println(lineNum + ": Unknown command. " + line);
 			}
 
 			lineNum++;
@@ -195,4 +275,4 @@ public class RevSequentialGen
 
 	} // end of main()
 
-} // end of class RevSequentialGen
+} // end of class RandomGen
